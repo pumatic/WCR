@@ -604,11 +604,11 @@ export default async function HomePage({
     <main className="min-h-screen bg-slate-50">
       <section className="mb-8 overflow-hidden rounded-[1.75rem] bg-gradient-to-r from-red-600 via-red-500 to-orange-500 px-6 py-7 text-white shadow-lg md:px-8 md:py-8">
         <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.35em] text-white/80 md:text-xs">
-          PUMA Internal POC
+          PUMA Southern Europe
         </p>
 
         <h1 className="text-3xl font-extrabold tracking-tight md:text-5xl">
-          World Cup Challenge
+          World Cup Royale 👑
         </h1>
 
         <p className="mt-3 max-w-2xl text-sm text-white/90 md:text-lg">

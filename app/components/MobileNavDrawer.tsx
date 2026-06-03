@@ -88,7 +88,7 @@ export default function MobileNavDrawer({
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-4">
           <div>
             <p className="text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">
-              World Cup Challenge
+              World Cup Royale
             </p>
             <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900">
               {t("menu")}

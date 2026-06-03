@@ -16,7 +16,8 @@
     "beta:simulate:list": "tsx scripts/simulate-results.ts list",
     "beta:simulate:match": "tsx scripts/simulate-results.ts match",
     "beta:simulate:date": "tsx scripts/simulate-results.ts date",
-    "beta:simulate:reset-date": "tsx scripts/simulate-results.ts reset-date"
+    "beta:simulate:reset-date": "tsx scripts/simulate-results.ts reset-date",
+    "prod:matches": "tsx scripts/seed-worldcup-matches-production.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.10.0",
