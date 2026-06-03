@@ -15,14 +15,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PUMA World Cup 2026 Predictor",
+  title: "PUMA World Cup Royale",
   description: "Predice resultados, suma puntos y compite en el ranking del Mundial.",
   manifest: "/manifest.json",
   themeColor: "#000000",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black",
-    title: "PUMA Play",
+    title: "PUMA Royale",
   },
   icons: {
     icon: "/favicon.ico",

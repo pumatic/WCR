@@ -608,7 +608,7 @@ export default async function HomePage({
         </p>
 
         <h1 className="text-3xl font-extrabold tracking-tight md:text-5xl">
-          World Cup Royale 👑
+          World Cup Royale
         </h1>
 
         <p className="mt-3 max-w-2xl text-sm text-white/90 md:text-lg">
