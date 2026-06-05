@@ -40,6 +40,12 @@ export default function PredictionForm({
     setAwayScore(initialAwayScore !== null ? String(initialAwayScore) : "");
   }, [initialHomeScore, initialAwayScore]);
 
+  const PREDICTION_LOCK_BUFFER_MS = 60 * 60 * 1000;
+
+  const predictionDeadline = matchDatetime
+    ? new Date(matchDatetime).getTime() - PREDICTION_LOCK_BUFFER_MS
+    : null;
+
   const isLocked = matchDatetime
     ? new Date(matchDatetime).getTime() <= Date.now()
     : false;

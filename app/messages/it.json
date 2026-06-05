@@ -103,7 +103,7 @@
     "active": "Attiva",
     "pendingGroupMatchesCount": "{count} partite in sospeso",
     "pending": "In sospeso",
-    "predict": "Pronostica",
+    "predict": "Pronostico",
     "fallbackUserName": "Utente",
     "pointsLabel": "{count, plural, one {# punto} other {# punti}}",
     "pointsCompact": "{count, plural, one {# pt} other {# pts}}",
