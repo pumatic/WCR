@@ -459,8 +459,6 @@
     "pendingLabel": "Pendente",
     "pumaMatchLabel": "PUMA Match",
     "ambiguousUser": "Vários utilizadores têm este nome visível.",
-    "loadError": "Não foi possível carregar os resultados visíveis deste utilizador.",
-    "searchUserPlaceHolder": "Pesquisar utilizador por nome",
-    "searchResultCount": "utilizadores visíveis"
+    "loadError": "Não foi possível carregar os resultados visíveis deste utilizador."
   }
 }

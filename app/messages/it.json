@@ -459,8 +459,6 @@
     "pendingLabel": "In sospeso",
     "pumaMatchLabel": "PUMA Match",
     "ambiguousUser": "Più utenti condividono questo nome visibile.",
-    "loadError": "Impossibile caricare i risultati visibili di questo utente.",
-    "searchUserPlaceHolder": "Cerca utente per nome",
-    "searchResultCount": "utenti visibili"
+    "loadError": "Impossibile caricare i risultati visibili di questo utente."
   }
 }

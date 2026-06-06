@@ -133,10 +133,10 @@ export default function RankingSearchList() {
 const labels = useMemo<RankingSearchLabels>(
   () => ({
     searchLabel: t("searchUserLabel"),
-    searchPlaceholder: t("searchUserPlaceHolder"),
+    searchPlaceholder: t("searchPlaceholder"),
     clearSearch: t("clearSearch"),
     noSearchResults: t("noSearchResults"),
-    resultCount: t("searchResultCount"),
+    resultCount: t("resultCount"),
     closeModal: t("closeModal"),
     loadingResults: t("loadingResults"),
     userResultsTitle: t("userResultsTitle"),
