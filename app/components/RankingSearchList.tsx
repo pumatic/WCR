@@ -484,7 +484,7 @@ export default function RankingSearchList() {
                           </span>
                         )}
                         {result.isPumaMatch && (
-                          <span className="rounded-full bg-orange-100 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-orange-800">
+                          <span className="inline-flex items-center rounded-full bg-gradient-to-r from-red-600 via-red-500 to-orange-500 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white shadow-sm">
                             {labels.pumaMatchLabel}
                           </span>
                         )}
