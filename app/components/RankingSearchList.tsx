@@ -4,6 +4,7 @@ import { Search, X } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useTranslations } from "next-intl";
 
 type RankingSearchLabels = {
   searchLabel: string;
@@ -57,105 +58,6 @@ type UserResultsResponse = {
     displayName: string;
   };
   results: UserResult[];
-};
-
-const labelsByLocale: Record<string, RankingSearchLabels> = {
-  en: {
-    searchLabel: "Search user",
-    searchPlaceholder: "Search user by name",
-    clearSearch: "Clear search",
-    noSearchResults: "No users match your search.",
-    resultCount: "{count} users shown",
-    closeModal: "Close",
-    loadingResults: "Loading results...",
-    userResultsTitle: "Latest visible results",
-    userResultsSubtitle: "Only matches that have started or finished are shown.",
-    noVisibleResults: "This user has no visible results yet.",
-    predictionLabel: "Prediction",
-    resultLabel: "Result",
-    liveLabel: "Live / closed",
-    finishedLabel: "Finished",
-    pointsLabel: "pts",
-    exactLabel: "Exact",
-    tendencyLabel: "Trend",
-    missLabel: "Miss",
-    pendingLabel: "Pending",
-    pumaMatchLabel: "PUMA Match",
-    ambiguousUser: "Multiple users share this display name.",
-    loadError: "Could not load this user's visible results.",
-  },
-  es: {
-    searchLabel: "Buscar usuario",
-    searchPlaceholder: "Buscar usuario por nombre",
-    clearSearch: "Limpiar búsqueda",
-    noSearchResults: "No hay usuarios que coincidan con tu búsqueda.",
-    resultCount: "{count} usuarios visibles",
-    closeModal: "Cerrar",
-    loadingResults: "Cargando resultados...",
-    userResultsTitle: "Últimos resultados visibles",
-    userResultsSubtitle: "Solo se muestran partidos empezados o finalizados.",
-    noVisibleResults: "Este usuario aún no tiene resultados visibles.",
-    predictionLabel: "Predicción",
-    resultLabel: "Resultado",
-    liveLabel: "En juego / cerrado",
-    finishedLabel: "Finalizado",
-    pointsLabel: "pts",
-    exactLabel: "Exacto",
-    tendencyLabel: "Tendencia",
-    missLabel: "Fallo",
-    pendingLabel: "Pendiente",
-    pumaMatchLabel: "PUMA Match",
-    ambiguousUser: "Hay varios usuarios con este nombre visible.",
-    loadError: "No se pudieron cargar los resultados visibles de este usuario.",
-  },
-  it: {
-    searchLabel: "Cerca utente",
-    searchPlaceholder: "Cerca utente per nome",
-    clearSearch: "Cancella ricerca",
-    noSearchResults: "Nessun utente corrisponde alla ricerca.",
-    resultCount: "{count} utenti visualizzati",
-    closeModal: "Chiudi",
-    loadingResults: "Caricamento risultati...",
-    userResultsTitle: "Ultimi risultati visibili",
-    userResultsSubtitle: "Sono mostrate solo partite iniziate o concluse.",
-    noVisibleResults: "Questo utente non ha ancora risultati visibili.",
-    predictionLabel: "Pronostico",
-    resultLabel: "Risultato",
-    liveLabel: "Live / chiusa",
-    finishedLabel: "Terminata",
-    pointsLabel: "pts",
-    exactLabel: "Esatto",
-    tendencyLabel: "Tendenza",
-    missLabel: "Errore",
-    pendingLabel: "In sospeso",
-    pumaMatchLabel: "PUMA Match",
-    ambiguousUser: "Più utenti condividono questo nome visibile.",
-    loadError: "Impossibile caricare i risultati visibili di questo utente.",
-  },
-  pt: {
-    searchLabel: "Pesquisar utilizador",
-    searchPlaceholder: "Pesquisar utilizador por nome",
-    clearSearch: "Limpar pesquisa",
-    noSearchResults: "Nenhum utilizador corresponde à pesquisa.",
-    resultCount: "{count} utilizadores visíveis",
-    closeModal: "Fechar",
-    loadingResults: "A carregar resultados...",
-    userResultsTitle: "Últimos resultados visíveis",
-    userResultsSubtitle: "Só são mostrados jogos iniciados ou terminados.",
-    noVisibleResults: "Este utilizador ainda não tem resultados visíveis.",
-    predictionLabel: "Previsão",
-    resultLabel: "Resultado",
-    liveLabel: "Em jogo / fechado",
-    finishedLabel: "Terminado",
-    pointsLabel: "pts",
-    exactLabel: "Exato",
-    tendencyLabel: "Tendência",
-    missLabel: "Falhou",
-    pendingLabel: "Pendente",
-    pumaMatchLabel: "PUMA Match",
-    ambiguousUser: "Vários utilizadores têm este nome visível.",
-    loadError: "Não foi possível carregar os resultados visíveis deste utilizador.",
-  },
 };
 
 function normalizeSearchValue(value: string) {
@@ -226,7 +128,35 @@ export default function RankingSearchList() {
   const [resultsError, setResultsError] = useState<string | null>(null);
 
   const locale = getLocaleFromPathname(pathname);
-  const labels = useMemo(() => labelsByLocale[locale] ?? labelsByLocale.en, [locale]);
+  const t = useTranslations("ranking");
+
+const labels = useMemo<RankingSearchLabels>(
+  () => ({
+    searchLabel: t("searchUserLabel"),
+    searchPlaceholder: t("searchUserPlaceholder"),
+    clearSearch: t("clearSearch"),
+    noSearchResults: t("noSearchResults"),
+    resultCount: t("searchResultCount"),
+    closeModal: t("closeModal"),
+    loadingResults: t("loadingResults"),
+    userResultsTitle: t("userResultsTitle"),
+    userResultsSubtitle: t("userResultsSubtitle"),
+    noVisibleResults: t("noVisibleResults"),
+    predictionLabel: t("predictionLabel"),
+    resultLabel: t("resultLabel"),
+    liveLabel: t("liveLabel"),
+    finishedLabel: t("finishedLabel"),
+    pointsLabel: t("shortPointsLabel"),
+    exactLabel: t("exactLabel"),
+    tendencyLabel: t("tendencyLabel"),
+    missLabel: t("missLabel"),
+    pendingLabel: t("pendingLabel"),
+    pumaMatchLabel: t("pumaMatchLabel"),
+    ambiguousUser: t("ambiguousUser"),
+    loadError: t("userResultsLoadError"),
+  }),
+  [t]
+);
 
   const openUserResults = useCallback(
     async (displayName: string) => {

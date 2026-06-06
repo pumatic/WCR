@@ -438,6 +438,27 @@
     "gapBelow": "Hai {gap}",
     "momentumHotStreak": "🔥 In grande forma",
     "momentumPressure": "⚡ Massima pressione",
-    "momentumHolding": "🛡️ Resiste"
+    "momentumHolding": "🛡️ Resiste",
+    "searchLabel": "Cerca utente",
+    "searchPlaceholder": "Cerca utente per nome",
+    "clearSearch": "Cancella ricerca",
+    "noSearchResults": "Nessun utente corrisponde alla ricerca.",
+    "resultCount": "{count} utenti visualizzati",
+    "closeModal": "Chiudi",
+    "loadingResults": "Caricamento risultati...",
+    "userResultsTitle": "Ultimi risultati visibili",
+    "userResultsSubtitle": "Sono mostrate solo partite iniziate o concluse.",
+    "noVisibleResults": "Questo utente non ha ancora risultati visibili.",
+    "predictionLabel": "Pronostico",
+    "resultLabel": "Risultato",
+    "liveLabel": "Live / chiusa",
+    "finishedLabel": "Terminata",
+    "exactLabel": "Esatto",
+    "tendencyLabel": "Tendenza",
+    "missLabel": "Errore",
+    "pendingLabel": "In sospeso",
+    "pumaMatchLabel": "PUMA Match",
+    "ambiguousUser": "Più utenti condividono questo nome visibile.",
+    "loadError": "Impossibile caricare i risultati visibili di questo utente."
   }
 }

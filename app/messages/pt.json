@@ -438,6 +438,27 @@
     "gapBelow": "Tens {gap}",
     "momentumHotStreak": "🔥 Em grande forma",
     "momentumPressure": "⚡ Pressão total",
-    "momentumHolding": "🛡️ A aguentar"
+    "momentumHolding": "🛡️ A aguentar",
+    "searchLabel": "Pesquisar utilizador",
+    "searchPlaceholder": "Pesquisar utilizador por nome",
+    "clearSearch": "Limpar pesquisa",
+    "noSearchResults": "Nenhum utilizador corresponde à pesquisa.",
+    "resultCount": "{count} utilizadores visíveis",
+    "closeModal": "Fechar",
+    "loadingResults": "A carregar resultados...",
+    "userResultsTitle": "Últimos resultados visíveis",
+    "userResultsSubtitle": "Só são mostrados jogos iniciados ou terminados.",
+    "noVisibleResults": "Este utilizador ainda não tem resultados visíveis.",
+    "predictionLabel": "Previsão",
+    "resultLabel": "Resultado",
+    "liveLabel": "Em jogo / fechado",
+    "finishedLabel": "Terminado",
+    "exactLabel": "Exato",
+    "tendencyLabel": "Tendência",
+    "missLabel": "Falhou",
+    "pendingLabel": "Pendente",
+    "pumaMatchLabel": "PUMA Match",
+    "ambiguousUser": "Vários utilizadores têm este nome visível.",
+    "loadError": "Não foi possível carregar os resultados visíveis deste utilizador."
   }
 }

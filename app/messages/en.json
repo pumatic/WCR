@@ -451,6 +451,27 @@
     "gapBelow": "You lead by {gap}",
     "momentumHotStreak": "🔥 Hot streak",
     "momentumPressure": "⚡ Pressure on",
-    "momentumHolding": "🛡️ Holding on"
+    "momentumHolding": "🛡️ Holding on",
+    "searchLabel": "Search user",
+    "searchPlaceholder": "Search user by name",
+    "clearSearch": "Clear search",
+    "noSearchResults": "No users match your search.",
+    "resultCount": "{count} users shown",
+    "closeModal": "Close",
+    "loadingResults": "Loading results...",
+    "userResultsTitle": "Latest visible results",
+    "userResultsSubtitle": "Only matches that have started or finished are shown.",
+    "noVisibleResults": "This user has no visible results yet.",
+    "predictionLabel": "Prediction",
+    "resultLabel": "Result",
+    "liveLabel": "Live / closed",
+    "finishedLabel": "Finished",
+    "exactLabel": "Exact",
+    "tendencyLabel": "Trend",
+    "missLabel": "Miss",
+    "pendingLabel": "Pending",
+    "pumaMatchLabel": "PUMA Match",
+    "ambiguousUser": "Multiple users share this display name.",
+    "loadError": "Could not load this user's visible results."
   }
 }

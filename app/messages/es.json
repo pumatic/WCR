@@ -451,7 +451,28 @@
     "gapBelow": "Le llevas {gap}",
     "momentumHotStreak": "🔥 En racha",
     "momentumPressure": "⚡ Presión total",
-    "momentumHolding": "🛡️ Aguantando"
+    "momentumHolding": "🛡️ Aguantando",
+    "searchLabel": "Buscar usuario",
+    "searchPlaceholder": "Buscar usuario por nombre",
+    "clearSearch": "Limpiar búsqueda",
+    "noSearchResults": "No hay usuarios que coincidan con tu búsqueda.",
+    "resultCount": "{count} usuarios visibles",
+    "closeModal": "Cerrar",
+    "loadingResults": "Cargando resultados...",
+    "userResultsTitle": "Últimos resultados visibles",
+    "userResultsSubtitle": "Solo se muestran partidos empezados o finalizados.",
+    "noVisibleResults": "Este usuario aún no tiene resultados visibles.",
+    "predictionLabel": "Predicción",
+    "resultLabel": "Resultado",
+    "liveLabel": "En juego / cerrado",
+    "finishedLabel": "Finalizado",
+    "exactLabel": "Exacto",
+    "tendencyLabel": "Tendencia",
+    "missLabel": "Fallo",
+    "pendingLabel": "Pendiente",
+    "pumaMatchLabel": "PUMA Match",
+    "ambiguousUser": "Hay varios usuarios con este nombre visible.",
+    "loadError": "No se pudieron cargar los resultados visibles de este usuario."
   }
 
 }
