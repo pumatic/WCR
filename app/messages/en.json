@@ -472,6 +472,8 @@
     "pendingLabel": "Pending",
     "pumaMatchLabel": "PUMA Match",
     "ambiguousUser": "Multiple users share this display name.",
-    "loadError": "Could not load this user's visible results."
+    "loadError": "Could not load this user's visible results.",
+    "searchUserPlaceHolder": "Search user by name",
+    "searchResultCount": "visible users"
   }
 }
