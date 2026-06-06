@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import PredictionForm from "@/components/PredictionForm";
+import type { MatchStatus } from "@/lib/match-detail";
 
 type PredictionRow = {
   id?: string;
@@ -18,6 +19,7 @@ type PredictionSectionProps = {
   awayScore: number | null;
   userId: string | null;
   prediction: PredictionRow | null;
+  matchStatus: MatchStatus;
 };
 
 function isValidDate(value: string | null | undefined) {
@@ -29,10 +31,6 @@ function isValidDate(value: string | null | undefined) {
 function hasMatchStarted(matchDatetime: string | null) {
   if (!isValidDate(matchDatetime)) return false;
   return new Date(matchDatetime as string).getTime() <= Date.now();
-}
-
-function isMatchFinished(homeScore: number | null, awayScore: number | null) {
-  return homeScore !== null && awayScore !== null;
 }
 
 function getPredictionOutcomeLabel(
@@ -344,15 +342,15 @@ export default function PredictionSection({
   awayScore,
   userId,
   prediction,
+  matchStatus,
 }: PredictionSectionProps) {
   if (!userId) {
     return <LoggedOutState />;
   }
 
   const started = hasMatchStarted(matchDatetime);
-  const finished = isMatchFinished(homeScore, awayScore);
 
-  if (finished) {
+  if (matchStatus === "finished") {
     return (
       <FinishedState
         prediction={prediction}
@@ -364,7 +362,7 @@ export default function PredictionSection({
     );
   }
 
-  if (started) {
+  if (matchStatus === "live" || started) {
     return (
       <ClosedPendingState
         prediction={prediction}

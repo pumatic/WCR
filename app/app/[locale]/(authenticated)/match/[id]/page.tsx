@@ -140,6 +140,7 @@ export default async function MatchDetailPage({ params }: Props) {
         awayScore={parseScore(match.away_score)}
         userId={user.id}
         prediction={predictionForSection}
+        matchStatus={matchStatus}
       />
 
       {matchStatus === "finished" ? (

@@ -1,3 +1,5 @@
+export type MatchStatus = "upcoming" | "live" | "finished";
+
 export type Match = {
   id: string;
   stage: string | null;
@@ -11,5 +13,6 @@ export type Match = {
   stadium: string | null;
   home_score: string | null;
   away_score: string | null;
+  status?: MatchStatus | null;
   city: string | null;
 };

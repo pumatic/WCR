@@ -20,6 +20,7 @@ type MyPredictionRow = {
   away_flag: string | null;
   home_score: number | null;
   away_score: number | null;
+  status?: "upcoming" | "live" | "finished" | null;
   points: number | null;
   exact_hit: boolean | null;
 };
@@ -27,6 +28,13 @@ type MyPredictionRow = {
 type PredictionSectionKey = "pending" | "closed" | "resolved";
 
 type Translator = Awaited<ReturnType<typeof getTranslations>>;
+
+type MatchStatusRow = {
+  id: string;
+  status: "upcoming" | "live" | "finished" | null;
+  home_score: number | null;
+  away_score: number | null;
+};
 
 const DEADLINE_BUFFER_HOURS = 1;
 
@@ -52,6 +60,14 @@ function getPredictionDeadline(dateString: string) {
 }
 
 function getPredictionStatus(row: MyPredictionRow) {
+  if (row.status === "finished") {
+    return "resolved" as const;
+  }
+
+  if (row.status === "live") {
+    return "closed" as const;
+  }
+
   const hasResult = row.home_score !== null && row.away_score !== null;
   if (hasResult) return "resolved" as const;
 
@@ -99,6 +115,7 @@ function getStatusClasses(status: PredictionSectionKey) {
 
 function getRowScoring(row: MyPredictionRow) {
   if (
+    row.status !== "finished" ||
     row.home_score === null ||
     row.away_score === null ||
     row.home_score_pred === null ||
@@ -146,6 +163,8 @@ function getRowScoring(row: MyPredictionRow) {
 }
 
 function getResolutionText(row: MyPredictionRow, t: Translator) {
+  if (row.status === "live") return t("resolution.pending");
+
   const hasResult = row.home_score !== null && row.away_score !== null;
   if (!hasResult) return t("resolution.pending");
 
@@ -167,6 +186,8 @@ function getResolutionText(row: MyPredictionRow, t: Translator) {
 }
 
 function getResolutionClasses(row: MyPredictionRow) {
+  if (row.status === "live") return "border border-amber-200 bg-amber-50 text-amber-700";
+
   const hasResult = row.home_score !== null && row.away_score !== null;
   if (!hasResult) return "border border-amber-200 bg-amber-50 text-amber-700";
 
@@ -229,6 +250,10 @@ function PredictionCard({
   t: Translator;
 }) {
   const scoring = getRowScoring(row);
+  const hasVisibleResult =
+    row.home_score !== null &&
+    row.away_score !== null &&
+    (row.status === "live" || row.status === "finished" || !row.status);
 
   return (
     <Link
@@ -313,7 +338,7 @@ function PredictionCard({
 
         <div
           className={`rounded-2xl p-4 text-center ${
-            row.home_score !== null && row.away_score !== null
+            hasVisibleResult
               ? "bg-slate-100"
               : "border border-amber-200 bg-amber-50"
           }`}
@@ -322,7 +347,7 @@ function PredictionCard({
             {t("card.realResult")}
           </div>
           <div className="mt-2 text-2xl font-extrabold text-slate-900">
-            {row.home_score !== null && row.away_score !== null
+            {hasVisibleResult
               ? `${row.home_score} - ${row.away_score}`
               : "-"}
           </div>
@@ -376,7 +401,46 @@ export default async function MyPredictionsPage({
     );
   }
 
-  const rows = (data ?? []) as MyPredictionRow[];
+  const viewRows = (data ?? []) as MyPredictionRow[];
+  const matchIds = [...new Set(viewRows.map((row) => row.match_id))];
+
+  const { data: matchStatusRows, error: matchStatusError } = matchIds.length
+    ? await supabaseServer
+        .from("matches")
+        .select("id, status, home_score, away_score")
+        .in("id", matchIds)
+    : { data: [], error: null };
+
+  if (matchStatusError) {
+    return (
+      <main className="flex min-h-[40vh] w-full flex-col">
+        <section className="rounded-[1.75rem] border border-red-200 bg-red-50 p-6 shadow-sm">
+          <h1 className="text-2xl font-bold text-slate-900">{t("title")}</h1>
+          <div className="mt-4 rounded-2xl border border-red-200 bg-white p-4 text-red-700">
+            {t("loadError")} {matchStatusError.message}
+          </div>
+        </section>
+      </main>
+    );
+  }
+
+  const matchStatusById = new Map(
+    ((matchStatusRows ?? []) as MatchStatusRow[]).map((match) => [
+      match.id,
+      match,
+    ]),
+  );
+
+  const rows = viewRows.map((row) => {
+    const match = matchStatusById.get(row.match_id);
+
+    return {
+      ...row,
+      status: match?.status ?? row.status ?? null,
+      home_score: match?.home_score ?? row.home_score,
+      away_score: match?.away_score ?? row.away_score,
+    };
+  });
 
   const groupedByStatus = groupRowsByStatus(rows);
 

@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase-server";
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
-import { LucideCircleArrowOutUpLeft } from "lucide-react";
 
 type MatchStatus = "upcoming" | "live" | "finished";
 
@@ -93,6 +92,7 @@ function buildMatchesRedirectUrl(params: {
   filterStatus?: string | null;
   success?: string;
   error?: string;
+  detail?: string | null;
 }) {
   const searchParams = new URLSearchParams();
 
@@ -108,13 +108,22 @@ function buildMatchesRedirectUrl(params: {
     searchParams.set("error", params.error);
   }
 
+  if (params.detail) {
+    searchParams.set("detail", params.detail.slice(0, 500));
+  }
+
   const query = searchParams.toString();
   const base = withLocale(params.locale, "/admin/matches");
-  return query ? `/admin/matches?${query}` : "/admin/matches";
+  return query ? `${base}?${query}` : base;
 }
 
-function redirectMatchError(locale: string, code: string, filterStatus?: string | null): never {
-  redirect(buildMatchesRedirectUrl({ locale, filterStatus, error: code }));
+function redirectMatchError(
+  locale: string,
+  code: string,
+  filterStatus?: string | null,
+  detail?: string | null,
+): never {
+  redirect(buildMatchesRedirectUrl({ locale, filterStatus, error: code, detail }));
 }
 
 function redirectMatchSuccess(locale: string, code: string, filterStatus?: string | null): never {
@@ -135,6 +144,37 @@ function redirectAdminError(locale: string, code: string): never {
 
 function redirectAdminSuccess(locale: string, code: string): never {
   redirect(withLocale(locale, `/admin?success=${code}`));
+}
+
+function getErrorDetail(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return error instanceof Error ? error.message : null;
+  }
+
+  const source = error as {
+    code?: unknown;
+    message?: unknown;
+    details?: unknown;
+    hint?: unknown;
+  };
+
+  return [
+    typeof source.code === "string" ? `code: ${source.code}` : null,
+    typeof source.message === "string" ? source.message : null,
+    typeof source.details === "string" ? source.details : null,
+    typeof source.hint === "string" ? `hint: ${source.hint}` : null,
+  ]
+    .filter(Boolean)
+    .join(" | ");
+}
+
+function isNextRedirectError(error: unknown) {
+  if (!error || typeof error !== "object") {
+    return false;
+  }
+
+  const digest = (error as { digest?: unknown }).digest;
+  return typeof digest === "string" && digest.startsWith("NEXT_REDIRECT;");
 }
 
 export async function createMatchAction(formData: FormData) {
@@ -185,7 +225,7 @@ export async function createMatchAction(formData: FormData) {
 
   if (error) {
     console.error("[createMatchAction]", error);
-    redirectMatchError("match-create", filterStatus);
+    redirectMatchError(locale, "match-create", filterStatus);
   }
 
   revalidateAdminSurfaces(locale);
@@ -194,89 +234,92 @@ export async function createMatchAction(formData: FormData) {
 
 export async function updateMatchAction(formData: FormData) {
   const locale = parseLocale(formData.get("locale"));
-  await requireAdmin(locale);
-  const supabaseAdmin = getSupabaseAdminClient();
-
-  const id = String(formData.get("id") ?? "");
   const filterStatus = String(formData.get("filter_status") ?? "all");
 
-  const stage = parseNullableText(formData.get("stage"));
-  const matchDatetime = parseNullableDateTime(formData.get("match_datetime"));
-  const homeTeam = parseNullableText(formData.get("home_team"));
-  const awayTeam = parseNullableText(formData.get("away_team"));
-  const homeFlag = parseNullableText(formData.get("home_flag"));
-  const awayFlag = parseNullableText(formData.get("away_flag"));
-  const matchStatus = String(
-    formData.get("match_status") ?? "upcoming"
-  ) as MatchStatus;
+  try {
+    await requireAdmin(locale);
+    const supabaseAdmin = getSupabaseAdminClient();
 
-  const isPumaMatch = parseCheckbox(formData.get("is_puma_match"));
-  const isVisible = parseCheckbox(formData.get("is_visible"));
-  const isPredictionOpen = parseCheckbox(formData.get("is_prediction_open"));
+    const id = String(formData.get("id") ?? "");
 
-  const homeScore = parseNullableScore(formData.get("home_score"));
-  const awayScore = parseNullableScore(formData.get("away_score"));
+    const stage = parseNullableText(formData.get("stage"));
+    const matchDatetime = parseNullableDateTime(formData.get("match_datetime"));
+    const homeTeam = parseNullableText(formData.get("home_team"));
+    const awayTeam = parseNullableText(formData.get("away_team"));
+    const homeFlag = parseNullableText(formData.get("home_flag"));
+    const awayFlag = parseNullableText(formData.get("away_flag"));
+    const matchStatus = String(
+      formData.get("match_status") ?? "upcoming"
+    ) as MatchStatus;
 
-  if (!id) {
-    redirectMatchError(locale, "match-update", filterStatus);
+    const isPumaMatch = parseCheckbox(formData.get("is_puma_match"));
+    const isVisible = parseCheckbox(formData.get("is_visible"));
+    const isPredictionOpen = parseCheckbox(formData.get("is_prediction_open"));
+
+    const homeScore = parseNullableScore(formData.get("home_score"));
+    const awayScore = parseNullableScore(formData.get("away_score"));
+
+    if (!id || !homeTeam || !awayTeam || homeTeam === awayTeam) {
+      redirectMatchError(locale, "match-update", filterStatus);
+    }
+
+    if ((homeScore !== null && homeScore < 0) || (awayScore !== null && awayScore < 0)) {
+      redirectMatchError(locale, "match-update", filterStatus);
+    }
+
+    const payload: {
+      stage: string | null;
+      match_datetime: string | null;
+      home_team: string | null;
+      away_team: string | null;
+      home_flag: string | null;
+      away_flag: string | null;
+      status: MatchStatus;
+      is_puma_match: boolean;
+      is_visible: boolean;
+      is_prediction_open: boolean;
+      home_score: number | null;
+      away_score: number | null;
+    } = {
+      stage,
+      match_datetime: matchDatetime,
+      home_team: homeTeam,
+      away_team: awayTeam,
+      home_flag: homeFlag,
+      away_flag: awayFlag,
+      status: matchStatus,
+      is_puma_match: isPumaMatch,
+      is_visible: isVisible,
+      is_prediction_open: isPredictionOpen,
+      home_score: homeScore,
+      away_score: awayScore,
+    };
+
+    if (matchStatus === "upcoming") {
+      payload.home_score = null;
+      payload.away_score = null;
+    }
+
+    const { error } = await supabaseAdmin
+      .from("matches")
+      .update(payload)
+      .eq("id", id);
+
+    if (error) {
+      console.error("[updateMatchAction]", error);
+      redirectMatchError(locale, "match-update", filterStatus, getErrorDetail(error));
+    }
+
+    revalidateAdminSurfaces(locale);
+  } catch (error) {
+    if (isNextRedirectError(error)) {
+      throw error;
+    }
+
+    console.error("[updateMatchAction][unexpected]", error);
+    redirectMatchError(locale, "match-update", filterStatus, getErrorDetail(error));
   }
 
-  if (!homeTeam || !awayTeam) {
-    redirectMatchError(locale, "match-update", filterStatus);
-  }
-
-  if (homeTeam === awayTeam) {
-    redirectMatchError(locale, "match-update", filterStatus);
-  }
-
-  if ((homeScore !== null && homeScore < 0) || (awayScore !== null && awayScore < 0)) {
-    redirectMatchError(locale, "match-update", filterStatus);
-  }
-
-  const payload: {
-    stage: string | null;
-    match_datetime: string | null;
-    home_team: string | null;
-    away_team: string | null;
-    home_flag: string | null;
-    away_flag: string | null;
-    status: MatchStatus;
-    is_puma_match: boolean;
-    is_visible: boolean;
-    is_prediction_open: boolean;
-    home_score: number | null;
-    away_score: number | null;
-  } = {
-    stage,
-    match_datetime: matchDatetime,
-    home_team: homeTeam,
-    away_team: awayTeam,
-    home_flag: homeFlag,
-    away_flag: awayFlag,
-    status: matchStatus,
-    is_puma_match: isPumaMatch,
-    is_visible: isVisible,
-    is_prediction_open: isPredictionOpen,
-    home_score: homeScore,
-    away_score: awayScore,
-  };
-
-  if (matchStatus !== "finished") {
-    payload.home_score = null;
-    payload.away_score = null;
-  }
-
-  const { error } = await supabaseAdmin
-    .from("matches")
-    .update(payload)
-    .eq("id", id);
-
-  if (error) {
-    console.error("[updateMatchAction]", error);
-    redirectMatchError(locale, "match-update", filterStatus);
-  }
-
-  revalidateAdminSurfaces(locale);
   redirectMatchSuccess(locale, "match-updated", filterStatus);
 }
 

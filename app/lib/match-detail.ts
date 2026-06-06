@@ -1,4 +1,4 @@
-import { Match } from "@/types/match";
+import { Match, MatchStatus as StoredMatchStatus } from "@/types/match";
 
 export type PredictionOutcome =
   | "exact"
@@ -8,6 +8,24 @@ export type PredictionOutcome =
   | "no_prediction";
 
 export type MatchStatus = "scheduled" | "live" | "finished";
+
+function normalizeStoredStatus(
+  status: StoredMatchStatus | null | undefined,
+): MatchStatus | null {
+  if (status === "finished") {
+    return "finished";
+  }
+
+  if (status === "live") {
+    return "live";
+  }
+
+  if (status === "upcoming") {
+    return "scheduled";
+  }
+
+  return null;
+}
 
 export type BreakdownItem = {
   label: string;
@@ -103,6 +121,11 @@ export function parseScore(
 }
 
 export function normalizeMatchStatus(match: Match): MatchStatus {
+  const storedStatus = normalizeStoredStatus(match.status);
+  if (storedStatus) {
+    return storedStatus;
+  }
+
   const homeScore = parseScore(match.home_score);
   const awayScore = parseScore(match.away_score);
 
