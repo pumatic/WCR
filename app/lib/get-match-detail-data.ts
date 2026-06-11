@@ -9,6 +9,7 @@ import {
   PredictionRow,
   TeamMeta,
 } from "@/lib/match-detail";
+import { getCommunityPredictionStats } from "@/lib/community-prediction-stats";
 
 type MatchDetailTranslator = (
   key: string,
@@ -57,6 +58,26 @@ export async function getMatchDetailData({
 
   const isPumaMatch = Boolean(match.is_puma_match) || hasPumaTeam;
   const matchStatus = normalizeMatchStatus(match);
+
+  const { data: communityPredictionData } =
+    matchStatus === "scheduled"
+      ? { data: [] }
+      : await supabaseServer
+          .from("predictions")
+          .select("home_score_pred, away_score_pred")
+          .eq("match_id", matchId);
+
+  const communityPredictionStats =
+    matchStatus === "scheduled"
+      ? null
+      : getCommunityPredictionStats(
+          (communityPredictionData ?? []) as Pick<
+            PredictionRow,
+            "home_score_pred" | "away_score_pred"
+          >[],
+          match
+        );
+
   const outcome = getOutcome({ matchStatus, match, prediction });
   const { totalPoints, breakdown } = getPointsAndBreakdown(outcome, isPumaMatch, t);
   const outcomeContent = getOutcomeContent(outcome, totalPoints, t);
@@ -75,5 +96,6 @@ export async function getMatchDetailData({
     totalPoints,
     breakdown,
     outcomeContent,
+    communityPredictionStats,
   };
 }

@@ -85,6 +85,12 @@ export default async function AdminLayout({
               KPIs
             </Link>
             <Link
+              href={`/${locale}/admin/kpis/champion`}
+              className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+            >
+              KPIs 🏆
+            </Link>
+            <Link
               href={`/${locale}`}
               className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
             >

@@ -1,5 +1,6 @@
 import AppTopBar from "@/components/AppTopBar";
 import RankingSearchList from "@/components/RankingSearchList";
+import MyPredictionsTeamSearch from "@/components/MyPredictionsTeamSearch";
 import { requireAuthenticatedUser } from "@/lib/auth-guard";
 
 export default async function AppLayout({
@@ -17,6 +18,7 @@ export default async function AppLayout({
         <AppTopBar isAdmin={isAdmin} />
         {children}
         <RankingSearchList />
+        <MyPredictionsTeamSearch />
       </div>
     </div>
   );

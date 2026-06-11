@@ -8,6 +8,7 @@ import MatchHeaderCard from "@/components/match/MatchHeaderCard";
 import PumaHighlightCard from "@/components/match/PumaHighlightCard";
 import MatchOutcomeCard from "@/components/match/MatchOutcomeCard";
 import MatchPointsBreakdownCard from "@/components/match/MatchPointsBreakdownCard";
+import CommunityPredictionStatsCard from "@/components/match/CommunityPredictionStatsCard";
 import { getMatchDetailData } from "@/lib/get-match-detail-data";
 import {
   getPumaCardText,
@@ -75,6 +76,7 @@ export default async function MatchDetailPage({ params }: Props) {
     totalPoints,
     breakdown,
     outcomeContent,
+    communityPredictionStats,
   } = data;
 
   const predictionForSection: PredictionSectionRow | null = prediction
@@ -147,6 +149,14 @@ export default async function MatchDetailPage({ params }: Props) {
         <MatchPointsBreakdownCard
           breakdown={breakdown}
           totalPoints={totalPoints}
+        />
+      ) : null}
+
+      {communityPredictionStats ? (
+        <CommunityPredictionStatsCard
+          stats={communityPredictionStats}
+          homeTeam={match.home_team}
+          awayTeam={match.away_team}
         />
       ) : null}
     </main>
