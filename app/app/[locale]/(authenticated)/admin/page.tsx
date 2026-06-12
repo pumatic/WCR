@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { getSupabaseServerClient } from "@/lib/supabase-server";
-import { generateRankingSnapshotAction } from "./actions";
-import GenerateSnapshotButton from "./GenerateSnapshotButton";
+import DailySnapshotForm from "./DailySnapshotForm";
 
 type SearchParams = Promise<{
   success?: string;
@@ -63,17 +62,37 @@ export default async function AdminHomePage({
 
   const supabase = await getSupabaseServerClient();
 
-  const [{ data: users }, { data: matches }] = await Promise.all([
-    supabase
-      .from("profiles")
-      .select("id, role, is_active, must_change_password"),
-    supabase
-      .from("matches")
-      .select("id, status, is_puma_match"),
-  ]);
+  const [{ data: users }, { data: matches }, { data: dailySnapshotRows }] =
+    await Promise.all([
+      supabase
+        .from("profiles")
+        .select("id, role, is_active, must_change_password"),
+      supabase
+        .from("matches")
+        .select("id, status, is_puma_match"),
+      supabase
+        .from("ranking_snapshots")
+        .select("snapshot_key, snapshot_label, created_at")
+        .like("snapshot_key", "day_%")
+        .order("created_at", { ascending: false })
+        .limit(500),
+    ]);
 
   const safeUsers = users ?? [];
   const safeMatches = matches ?? [];
+
+  const dailySnapshots = Array.from(
+    new Map(
+      (dailySnapshotRows ?? []).map((snapshot) => [
+        snapshot.snapshot_key,
+        {
+          key: snapshot.snapshot_key,
+          label: snapshot.snapshot_label,
+          createdAt: snapshot.created_at,
+        },
+      ])
+    ).values()
+  ).slice(0, 10);
 
   const totalUsers = safeUsers.length;
   const admins = safeUsers.filter((u) => u.role === "admin").length;
@@ -175,45 +194,7 @@ export default async function AdminHomePage({
           </div>
         )}
 
-        <form action={generateRankingSnapshotAction} className="mt-6">
-          <div className="grid gap-4 md:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Clave del snapshot
-              </label>
-              <select
-                name="snapshot_key"
-                defaultValue="group_md1"
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              >
-                <option value="group_md1">group_md1</option>
-                <option value="group_md2">group_md2</option>
-                <option value="group_md3">group_md3</option>
-                <option value="round_32">Dieciseisavos de final</option>
-                <option value="round_16">Octavos de final</option>
-                <option value="quarterfinals">Cuartos de final</option>
-                <option value="semifinals">Semifinales</option>
-                <option value="final">Final</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500">
-                Etiqueta visible
-              </label>
-              <input
-                name="snapshot_label"
-                defaultValue="Fase de grupos · Jornada 1"
-                placeholder="Ej. Fase de grupos · Jornada 1"
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
-              />
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <GenerateSnapshotButton />
-          </div>
-        </form>
+        <DailySnapshotForm existingSnapshots={dailySnapshots} />
       </section>
     </div>
   );
