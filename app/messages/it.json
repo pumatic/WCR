@@ -346,6 +346,32 @@
       }
     }
   },
+
+  
+  "communityPredictionStats": {
+  "eyebrow": "Polso della community",
+  "title": "Pronostici della community",
+  "subtitle": "I pronostici aggregati vengono mostrati solo quando la partita è chiusa.",
+  "totalPredictions": "pronostici",
+  "empty": "Non ci sono ancora pronostici registrati per questa partita.",
+  "mostPopular": "Risultato più popolare",
+  "scorelineShare": "{percentage}% degli utenti - {count} pronostici",
+  "exactResult": "Ha indovinato il risultato esatto",
+  "exactResultShare": "{percentage}% ha previsto il risultato finale",
+  "homeWin": "Vittoria {team}",
+  "draw": "Pareggio",
+  "awayWin": "Vittoria {team}",
+  "scorelineBreakdown": "Risultati più scelti"
+},
+"myPredictionsTeamSearch": {
+  "label": "Cerca squadra",
+  "placeholder": "Cerca una squadra nei tuoi pronostici",
+  "clear": "Cancella ricerca squadra",
+  "resultCount": "{count} pronostici visibili",
+  "noResults": "Nessun pronostico trovato per questa squadra."
+},
+
+
   "ranking": {
     "title": "Classifica",
     "intro": "La tua posizione attuale e la classifica completa del torneo.",
@@ -395,6 +421,7 @@
     "pointsLabel": "punti",
     "pt": "{count} pt",
     "pts": "{count} pts",
+    "shortPts": "pts",
     "pointCount_one": "{count} punto",
     "pointCount_other": "{count} punti",
     "userFallback": "Utente",

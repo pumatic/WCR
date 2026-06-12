@@ -359,6 +359,30 @@
     }
   },
 
+  
+  "communityPredictionStats": {
+  "eyebrow": "Pulso de la comunidad",
+  "title": "Predicciones de la comunidad",
+  "subtitle": "Las predicciones agregadas solo se muestran cuando el partido ya está cerrado.",
+  "totalPredictions": "predicciones",
+  "empty": "Aún no hay predicciones registradas para este partido.",
+  "mostPopular": "Marcador más popular",
+  "scorelineShare": "{percentage}% de usuarios - {count} predicciones",
+  "exactResult": "Acertaron el marcador",
+  "exactResultShare": "{percentage}% predijo el marcador final",
+  "homeWin": "Victoria {team}",
+  "draw": "Empate",
+  "awayWin": "Victoria {team}",
+  "scorelineBreakdown": "Marcadores más elegidos"
+},
+"myPredictionsTeamSearch": {
+  "label": "Buscar equipo",
+  "placeholder": "Buscar equipo en tus predicciones",
+  "clear": "Limpiar búsqueda de equipo",
+  "resultCount": "{count} predicciones visibles",
+  "noResults": "No hay predicciones para ese equipo."
+},
+
   "ranking": {
     "title": "Ranking",
     "intro": "Tu posición actual y la clasificación completa del torneo.",
@@ -408,6 +432,7 @@
     "pointsLabel": "puntos",
     "pt": "{count} pt",
     "pts": "{count} pts",
+    "shortPts": "pts",
     "pointCount_one": "{count} punto",
     "pointCount_other": "{count} puntos",
     "userFallback": "Usuario",

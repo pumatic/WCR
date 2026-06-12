@@ -359,6 +359,29 @@
     }
   },
 
+  "communityPredictionStats": {
+  "eyebrow": "Community Pulse",
+  "title": "Community Predictions",
+  "subtitle": "Aggregated predictions are only shown once the match is closed.",
+  "totalPredictions": "predictions",
+  "empty": "No predictions have been recorded for this match yet.",
+  "mostPopular": "Most popular scoreline",
+  "scorelineShare": "{percentage}% of users - {count} predictions",
+  "exactResult": "Predicted the exact score",
+  "exactResultShare": "{percentage}% predicted the final score",
+  "homeWin": "{team} win",
+  "draw": "Draw",
+  "awayWin": "{team} win",
+  "scorelineBreakdown": "Most selected scorelines"
+},
+"myPredictionsTeamSearch": {
+  "label": "Search team",
+  "placeholder": "Search for a team in your predictions",
+  "clear": "Clear team search",
+  "resultCount": "{count} visible predictions",
+  "noResults": "No predictions found for that team."
+},
+
   "ranking": {
     "title": "Ranking",
     "intro": "Your current position and the full tournament standings.",
@@ -408,6 +431,7 @@
     "pointsLabel": "points",
     "pt": "{count} pt",
     "pts": "{count} pts",
+    "shortPts": "pts",
     "pointCount_one": "{count} point",
     "pointCount_other": "{count} points",
     "userFallback": "User",

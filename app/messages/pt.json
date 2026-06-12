@@ -346,6 +346,31 @@
       }
     }
   },
+  
+
+  "communityPredictionStats": {
+  "eyebrow": "Pulso da comunidade",
+  "title": "Previsões da comunidade",
+  "subtitle": "As previsões agregadas só são mostradas quando o jogo está encerrado.",
+  "totalPredictions": "previsões",
+  "empty": "Ainda não existem previsões registadas para este jogo.",
+  "mostPopular": "Resultado mais popular",
+  "scorelineShare": "{percentage}% dos utilizadores - {count} previsões",
+  "exactResult": "Acertaram o resultado exato",
+  "exactResultShare": "{percentage}% previu o resultado final",
+  "homeWin": "Vitória do {team}",
+  "draw": "Empate",
+  "awayWin": "Vitória do {team}",
+  "scorelineBreakdown": "Resultados mais escolhidos"
+},
+"myPredictionsTeamSearch": {
+  "label": "Pesquisar equipa",
+  "placeholder": "Pesquisar equipa nas tuas previsões",
+  "clear": "Limpar pesquisa de equipa",
+  "resultCount": "{count} previsões visíveis",
+  "noResults": "Não existem previsões para essa equipa."
+},
+
   "ranking": {
     "title": "Classificação",
     "intro": "A tua posição atual e a classificação completa do torneio.",
@@ -395,6 +420,7 @@
     "pointsLabel": "pontos",
     "pt": "{count} pt",
     "pts": "{count} pts",
+    "shortPts": "pts",
     "pointCount_one": "{count} ponto",
     "pointCount_other": "{count} pontos",
     "userFallback": "Utilizador",

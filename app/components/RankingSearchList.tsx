@@ -146,7 +146,7 @@ const labels = useMemo<RankingSearchLabels>(
     resultLabel: t("resultLabel"),
     liveLabel: t("liveLabel"),
     finishedLabel: t("finishedLabel"),
-    pointsLabel: t("pts"),
+    pointsLabel: t("shortPts"),
     exactLabel: t("exactLabel"),
     tendencyLabel: t("tendencyLabel"),
     missLabel: t("missLabel"),
