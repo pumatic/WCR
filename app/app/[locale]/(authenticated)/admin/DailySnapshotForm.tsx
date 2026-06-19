@@ -31,10 +31,24 @@ function formatSnapshotLabel(date: string) {
   return `${day}-${month}-${year}`;
 }
 
+function formatCutoffLabel(date: string) {
+  if (!date) return "";
+
+  const cutoff = new Date(`${date}T00:00:00`);
+  cutoff.setDate(cutoff.getDate() + 1);
+
+  return new Intl.DateTimeFormat("es-ES", {
+    timeZone: "Europe/Madrid",
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(cutoff);
+}
+
 export default function DailySnapshotForm({ existingSnapshots }: Props) {
   const [selectedDate, setSelectedDate] = useState(getTodayValue);
   const snapshotKey = getSnapshotKey(selectedDate);
   const snapshotLabel = formatSnapshotLabel(selectedDate);
+  const cutoffLabel = formatCutoffLabel(selectedDate);
 
   const existingSnapshot = useMemo(
     () => existingSnapshots.find((snapshot) => snapshot.key === snapshotKey) ?? null,
@@ -91,15 +105,22 @@ export default function DailySnapshotForm({ existingSnapshots }: Props) {
 
         {existingSnapshot && (
           <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-            Ya existe un snapshot para esta fecha. Al generarlo de nuevo se actualizara
-            con la clasificacion actual.
+            Ya existe un snapshot para esta fecha. Al generarlo de nuevo se recalculara
+            con los partidos finalizados antes del cierre de ese dia.
           </div>
         )}
 
         <p className="mt-4 text-sm text-slate-500">
-          Genera el snapshot despues de cerrar el ultimo partido del dia. La foto conserva
-          la clasificacion acumulada hasta ese momento.
+          Genera una foto acumulada hasta las 23:59 del dia seleccionado, hora Madrid.
+          Si hay partidos anteriores sin resultado final, la funcion de Supabase debe bloquear
+          la creacion para evitar snapshots incompletos.
         </p>
+
+        {cutoffLabel && (
+          <p className="mt-2 text-xs text-slate-500">
+            Corte tecnico: antes de {cutoffLabel}.
+          </p>
+        )}
 
         <div className="mt-4">
           <GenerateSnapshotButton

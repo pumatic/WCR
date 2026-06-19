@@ -403,7 +403,10 @@ function RankingListItem({
 
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="truncate text-sm font-bold text-neutral-900 sm:text-base">
+            <p 
+              data-ranking-user-name
+              data-display-name={getDisplayName(row, t("userFallback"))}
+              className="truncate text-sm font-bold text-neutral-900 sm:text-base">
               {getDisplayName(row, t("userFallback"))}
             </p>
 

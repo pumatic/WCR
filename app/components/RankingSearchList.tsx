@@ -117,6 +117,7 @@ function getOutcomeClass(outcome: UserResult["outcome"]) {
   }
 }
 
+
 export default function RankingSearchList() {
   const pathname = usePathname();
   const [search, setSearch] = useState("");
