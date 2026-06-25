@@ -2,6 +2,13 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase-server";
 
+const SUPER_ADMIN_EMAIL = "albert.fernandez@puma.com";
+
+function normalizeEmail(value: string | null | undefined) {
+  return value?.trim().toLowerCase() ?? "";
+}
+
+
 export default async function AdminLayout({
   children,
   params,
@@ -30,6 +37,8 @@ export default async function AdminLayout({
   if (meError || !me || me.role !== "admin" || !me.is_active) {
     redirect(`/${locale}`);
   }
+
+  const isSuperAdmin = normalizeEmail(me.email) === SUPER_ADMIN_EMAIL;
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -90,6 +99,14 @@ export default async function AdminLayout({
             >
               KPIs 🏆
             </Link>
+            {isSuperAdmin && (
+              <Link
+                href={`/${locale}/admin/super-predictions`}
+                className="rounded-lg border border-violet-300 bg-violet-50 px-4 py-2 text-sm font-semibold text-violet-800 hover:bg-violet-100"
+              >
+                Admin Preds. 🤖
+              </Link>
+            )}
             <Link
               href={`/${locale}`}
               className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
