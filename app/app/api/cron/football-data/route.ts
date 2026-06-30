@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 import {
+  getFootballDataRegularTimeScore,
   getWorldCupMatches,
   kickoffsMatch,
   mapFootballDataStatus,
@@ -136,8 +137,9 @@ async function syncMatches(dryRun: boolean) {
     }
 
     const nextStatus = mapFootballDataStatus(external.status, external.utcDate);
-    const externalHomeScore = external.score.fullTime?.home ?? null;
-    const externalAwayScore = external.score.fullTime?.away ?? null;
+    const regularTimeScore = getFootballDataRegularTimeScore(external);
+    const externalHomeScore = regularTimeScore.home;
+    const externalAwayScore = regularTimeScore.away;
     const payload: {
       status?: "upcoming" | "live" | "finished";
       is_prediction_open?: boolean;
