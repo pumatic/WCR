@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { requireAuthenticatedUser } from "@/lib/auth-guard";
-import { getSupabaseAdminClient } from "@/lib/supabase-admin";
 
 type UserPredictionRow = {
   prediction_id: string;
@@ -15,7 +14,6 @@ type UserPredictionRow = {
   is_puma_match: boolean | null;
   home_score: number | null;
   away_score: number | null;
-  status?: "live" | "finished";
 };
 
 function hasResult(row: UserPredictionRow) {
@@ -31,7 +29,6 @@ function hasStarted(row: UserPredictionRow) {
 
 function getScoring(row: UserPredictionRow) {
   if (
-    row.status !== "finished" ||
     row.home_score === null ||
     row.away_score === null ||
     row.home_score_pred === null ||
@@ -72,8 +69,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing displayName" }, { status: 400 });
   }
 
-  await requireAuthenticatedUser();
-  const supabase = getSupabaseAdminClient();
+  const { supabase } = await requireAuthenticatedUser();
 
   const { data: matchingUsers, error: userError } = await supabase
     .from("prediction_scores")
@@ -95,55 +91,23 @@ export async function GET(request: Request) {
 
   const rankingUser = matchingUsers[0];
 
-  const { data: visibleMatches, error: matchesError } = await supabase
-    .from("matches")
-    .select("id, status, home_score, away_score")
-    .in("status", ["live", "finished"]);
-
-  if (matchesError) {
-    return NextResponse.json({ error: matchesError.message }, { status: 500 });
-  }
-
-  const matchById = new Map(
-    (visibleMatches ?? []).map((match) => [match.id, match])
-  );
-  const visibleMatchIds = [...matchById.keys()];
-
-  if (visibleMatchIds.length === 0) {
-    return NextResponse.json({
-      user: {
-        id: rankingUser.user_id,
-        displayName: rankingUser.display_name ?? displayName,
-      },
-      results: [],
-    });
-  }
-
   const { data, error } = await supabase
     .from("my_predictions_view")
     .select(
       "prediction_id, user_id, match_id, home_score_pred, away_score_pred, stage, match_datetime, home_team, away_team, is_puma_match, home_score, away_score"
     )
     .eq("user_id", rankingUser.user_id)
-    .in("match_id", visibleMatchIds)
     .order("match_datetime", { ascending: false })
-    .limit(12);
+    .limit(60);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
   const results = ((data ?? []) as UserPredictionRow[])
-    .map((viewRow) => {
-      const match = matchById.get(viewRow.match_id);
-      if (!match) return null;
-
-      const row = {
-        ...viewRow,
-        status: match.status as "live" | "finished",
-        home_score: match.home_score,
-        away_score: match.away_score,
-      };
+    .filter((row) => hasResult(row) || hasStarted(row))
+    .slice(0, 12)
+    .map((row) => {
       const scoring = getScoring(row);
 
       return {
@@ -162,13 +126,28 @@ export async function GET(request: Request) {
           home: row.home_score,
           away: row.away_score,
         },
-        status: row.status,
+        status: hasResult(row) ? "finished" : "live",
         points: scoring.points,
         outcome: scoring.outcome,
       };
-    })
-    .filter((result) => result !== null);
+    });
+  
+  const { data: block } = await supabase
+  .from("blocked_ranking_result_users")
+  .select("blocked_until, reason")
+  .eq("user_id", rankingUser.user_id)
+  .maybeSingle();
 
+const isBlocked =
+  block &&
+  (!block.blocked_until || new Date(block.blocked_until).getTime() > Date.now());
+
+  if (isBlocked) {
+  return NextResponse.json(
+    { error: "Predictions are temporarily hidden for this user." },
+    { status: 403 }
+  );
+}
   return NextResponse.json({
     user: {
       id: rankingUser.user_id,
